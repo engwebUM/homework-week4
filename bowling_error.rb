@@ -1,7 +1,7 @@
 class Bowling_error
 
 	def isnumeric(pins)
-		 return   raise unless pins.is_a?(Numeric)
+		return   raise unless pins.is_a?(Numeric)
 	end
 
 	def numberpins (pins)
