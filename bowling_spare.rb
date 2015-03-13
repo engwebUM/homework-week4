@@ -6,7 +6,7 @@ class Bowling_spare
   	end
 
   	def callSpare(i,spare)
-	     if(spare==1)
+	    if(spare==1)
 	      Spare(@score[i][0])
 	    end
   	end
