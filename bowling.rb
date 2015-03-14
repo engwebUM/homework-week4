@@ -57,10 +57,9 @@ class Frames
   MIN_FRAMES = 0
   MAX_EXTRA_BALLS = 2
 
-  def initialize(scoreSystem, extraBallManager)
+  def initialize(extraBallManager)
     @frameCounter = 0
     @frames = Array.new(MAX_FRAMES + MAX_EXTRA_BALLS){ Frame.new }
-    @scoreSystem = scoreSystem
     @extraBallManager = extraBallManager
   end
 
@@ -72,7 +71,25 @@ class Frames
   end
 
   def score
-    @scoreSystem.score(self)
+    if isLastFrame? || isBonusFrame?
+      calculateFramesScore(MAX_FRAMES - 2) + calculateBonusScore
+    else
+      calculateFramesScore(frameCounter)
+    end
+  end
+
+  def calculateFramesScore(counter, score=0)
+    for index in 0..counter
+      score += frames[index].score + verifyIfIsStrikeOrSpare(index).to_i
+    end
+    score
+  end
+
+  def calculateBonusScore(score = 0)
+    for index in MAX_FRAMES - 1..frameCounter
+      score += frames[index].score
+    end
+    score
   end
 
   def isLastFrame?
@@ -84,6 +101,22 @@ class Frames
   end
 
   private
+  def verifyIfIsStrikeOrSpare(index)
+    if frames[index].isStrike?
+       closeTwoBallsScore(index + 1)
+    elsif frames[index].isSpare?
+      frames[index + 1].firstAttempt
+    end
+  end
+
+  def closeTwoBallsScore(currentFrameNumber)
+    if frames[currentFrameNumber].isStrike?
+      frames[currentFrameNumber].score + frames[currentFrameNumber + 1].firstAttempt
+    else
+      frames[currentFrameNumber].score
+    end
+  end
+
   def getCurrentFrame
     if isLastFrame?
       @extraBallManager.calculateExtraBalls(frames[frameCounter])
@@ -102,8 +135,8 @@ end
 
 class Bowling
 
-  def initialize(scoreSystem = BowlingScoreSystem.new, extraBallManager= ExtraBallManager.new)
-    @frames = Frames.new(scoreSystem, extraBallManager)
+  def initialize(extraBallManager= ExtraBallManager.new)
+    @frames = Frames.new(extraBallManager)
   end
 
   def roll(pins = 0)
@@ -112,56 +145,6 @@ class Bowling
 
   def score
     @frames.score
-  end
-end
-
-class BowlingScoreSystem
-
-  attr_reader :frames
-
-  FRAMES_SCORE_LIMIT = 8
-
-  def score(frames)
-    if frames.isLastFrame? || frames.isBonusFrame?
-      calculateFramesScore(frames, FRAMES_SCORE_LIMIT) + calculateBonusScore(frames)
-    else
-      calculateFramesScore(frames, frames.frameCounter)
-    end
-  end
-
-  def calculateFramesScore(frames, counter, score=0)
-    for index in 0..counter
-      score += frames.frames[index].score + verifyIfIsStrikeOrSpare(frames, index).to_i
-    end
-    score
-  end
-
-  def calculateBonusScore(frames, score = 0)
-    for index in FRAMES_SCORE_LIMIT + 1..frames.frameCounter
-      score += frames.frames[index].score
-    end
-    score
-  end
-
-  private
-  def verifyIfIsStrikeOrSpare(frames, index)
-    if frames.frames[index].isStrike?
-       closeTwoBallsScore(frames, index)
-    elsif frames.frames[index].isSpare?
-       closeFrame(frames, index).firstAttempt
-    end
-  end
-
-  def closeFrame(frames, currentFrameNumber)
-    frames.frames[currentFrameNumber + 1]
-  end
-
-  def closeTwoBallsScore(frames, currentFrameNumber)
-    if closeFrame(frames, currentFrameNumber).isStrike?
-      closeFrame(frames, currentFrameNumber).score + closeFrame(frames, currentFrameNumber + 1).firstAttempt
-    else
-      closeFrame(frames, currentFrameNumber).score
-    end
   end
 end
 
