@@ -1,326 +1,253 @@
 class Bowling
-	attr_accessor :pontuacao
-	attr_accessor :totalPontos, :jogada, :pinos, :jogadaExtra
+	attr_accessor :frame_score, :full_points, :move, :pins, :move_bonus
 
 	def initialize
-		@pontuacao = { }
-		for i in 1..10
-   			pontuacao[i] = Rodada.new
-
-   			@totalPontos = 0
-			@jogada = 1
-			@pinos = 10
-			@jogadaExtra = false
+		@frame_score = { }
+		for frame in 1..10
+   			frame_score[frame] = Frame.new
+   			@full_points = 0
+			@move = 1
+			@pins = 10
+			@move_bonus = false
 		end
 	end
 
 	def roll(pins)
-		# roll the desired number of pins
-		if jogada == 1
-			if pontuacao[1].tentativa1 == nil
-				pontuacao[1].tentativa1 = pins
-				pontuacao[1].pontos = pins
-				@totalPontos += pins
-
+		if move == 1
+			add_points(pins)		
+		elsif move == 2
+			add_bonus(pins, 1)
+			add_points(pins)		
+		elsif move <= 9
+			add_bonus(pins, 2)
+			add_points(pins)		
+		elsif move == 10
+			add_bonus(pins, 2)
+			if frame_score[move].try1 == nil
+				tries(1, pins)
 				if pins == 10
-					pontuacao[1].estado = "strike"
-					pontuacao[1].bonus = 2
-					@jogada += 1
+					frame_score[move].status = "strike"
+					@move_bonus = true
 				else
-					@pinos -= pins
+					@pins -= pins
 				end
-			else
-				pontuacao[1].tentativa2 = pins
-				pontuacao[1].pontos += pins
-				@totalPontos += pins
-
-				if pins == @pinos
-					pontuacao[1].estado = "spare"
-					pontuacao[1].bonus = 1
-				end
-				@pinos = 10
-				@jogada += 1
-			end
-		
-		elsif jogada == 2
-			if pontuacao[1].bonus > 0
-				pontuacao[1].pontos += pins
-				@totalPontos += pins
-				pontuacao[1].bonus -= 1
-			end
-
-			if pontuacao[2].tentativa1 == nil
-				pontuacao[2].tentativa1 = pins
-				@totalPontos += pins
-				pontuacao[2].pontos = totalPontos
-
-				if pins == 10
-					pontuacao[2].estado = "strike"
-					pontuacao[2].bonus = 2
-					@jogada += 1
-				else
-					@pinos -= pins
-				end
-			else
-				pontuacao[2].tentativa2 = pins
-				@totalPontos += pins
-				pontuacao[2].pontos = totalPontos
-
-				if pins == @pinos
-					pontuacao[2].estado = "spare"
-					pontuacao[2].bonus = 1
-				end
-				@pinos = 10
-				@jogada += 1
-			end
-		
-		elsif jogada <= 9
-			if pontuacao[jogada - 2].bonus > 0
-				pontuacao[jogada - 2].pontos += pins
-				@totalPontos += pins
-				pontuacao[jogada - 2].bonus -= 1
-				pontuacao[jogada - 1].pontos += pins
-			end
-			if pontuacao[jogada - 1].bonus > 0
-				pontuacao[jogada - 1].pontos += pins
-				@totalPontos += pins
-				pontuacao[jogada - 1].bonus -= 1
-			end
-
-			if pontuacao[jogada].tentativa1 == nil
-				pontuacao[jogada].tentativa1 = pins
-				@totalPontos += pins
-				pontuacao[jogada].pontos = totalPontos
-
-				if pins == 10
-					pontuacao[jogada].estado = "strike"
-					pontuacao[jogada].bonus = 2
-					@jogada += 1
-				else
-					@pinos -= pins
-				end
-			else
-				pontuacao[jogada].tentativa2 = pins
-				@totalPontos += pins
-				pontuacao[jogada].pontos = totalPontos
-
-				if pins == @pinos
-					pontuacao[jogada].estado = "spare"
-					pontuacao[jogada].bonus = 1
-				end
-				@pinos = 10
-				@jogada += 1
-			end
-		
-		elsif jogada == 10
-			if pontuacao[jogada - 2].bonus > 0
-				pontuacao[jogada - 2].pontos += pins
-				@totalPontos += pins
-				pontuacao[jogada - 2].bonus -= 1
-				pontuacao[jogada - 1].pontos += pins
-			end
-			if pontuacao[jogada - 1].bonus > 0
-				pontuacao[jogada - 1].pontos += pins
-				@totalPontos += pins
-				pontuacao[jogada - 1].bonus -= 1
-			end
-
-			if pontuacao[jogada].tentativa1 == nil
-				pontuacao[jogada].tentativa1 = pins
-				@totalPontos += pins
-				pontuacao[jogada].pontos = totalPontos
-
-				if pins == 10
-					pontuacao[jogada].estado = "strike"
-					@jogadaExtra = true
-				else
-					@pinos -= pins
-				end
-			elsif pontuacao[jogada].tentativa2 == nil
-				pontuacao[jogada].tentativa2 = pins
-				@totalPontos += pins
-				pontuacao[jogada].pontos = totalPontos
-
-				if pins == @pinos
-					if pontuacao[jogada].estado == nil
-						pontuacao[jogada].estado = "spare"
+			elsif frame_score[move].try2 == nil
+				tries(2, pins)
+				if pins == @pins
+					if frame_score[move].status == nil
+						frame_score[move].status = "spare"
 					end
-					@jogadaExtra = true
-					@pinos = 10
+					@move_bonus = true
+					@pins = 10
 				else
-					if jogadaExtra
-						@pinos -= pins
+					if move_bonus
+						@pins -= pins
 					else
-						@jogada += 1
-						puts totalPontos
+						@move += 1
+						puts full_points
 					end
 				end
-			elsif @jogadaExtra == true
-				pontuacao[jogada].tentativa3 = pins
-				@totalPontos += pins
-				pontuacao[jogada].pontos = totalPontos
-				@jogada += 1
+			elsif @move_bonus == true
+				tries(3, pins)
+				@move += 1
 			end
 		end
+	end
+
+	def add_bonus(pins, bonus)
+		if bonus == 2
+			if frame_score[move - 2].bonus > 0
+				frame_score[move - 2].points += pins
+				@full_points += pins
+				frame_score[move - 2].bonus -= 1
+				frame_score[move - 1].points += pins
+			end
+		end
+		if frame_score[move - 1].bonus > 0
+			frame_score[move - 1].points += pins
+			@full_points += pins
+			frame_score[move - 1].bonus -= 1
+		end
+	end
+
+	def add_points(pins)
+		if frame_score[move].try1 == nil
+			tries(1, pins)
+			if pins == 10
+				frame_score[move].status = "strike"
+				frame_score[move].bonus = 2
+				@move += 1
+			else
+				@pins -= pins
+			end
+		else
+			tries(2, pins)
+			if pins == @pins
+				frame_score[move].status = "spare"
+				frame_score[move].bonus = 1
+			end
+			@pins = 10
+			@move += 1
+		end
+	end
+
+	def tries(try, pins)
+		if try == 1
+			frame_score[move].try1 = pins
+		elsif try == 2
+			frame_score[move].try2 = pins
+		else
+			frame_score[move].try3 = pins
+		end
+		@full_points += pins
+		frame_score[move].points = full_points
 	end
 
 	def score
-		totalPontos
+		full_points
 	end
 
-	def scoreDetalhado
-		# return the current score
-		puts
-		puts "+-------------------------------------------------------------+"
+	def detailed_score
+		puts "\n+-------------------------------------------------------------+"
 		puts "|  1  |  2  |  3  |  4  |  5  |  6  |  7  |  8  |  9  |  10   |"
 		puts "+-------------------------------------------------------------+"
-		puts "| #{aux(1,1)} #{aux(1,2)} | #{aux(2,1)} #{aux(2,2)} | #{aux(3,1)} #{aux(3,2)} | #{aux(4,1)} #{aux(4,2)} | #{aux(5,1)} #{aux(5,2)} | #{aux(6,1)} #{aux(6,2)} | #{aux(7,1)} #{aux(7,2)} | #{aux(8,1)} #{aux(8,2)} | #{aux(9,1)} #{aux(9,2)} | #{aux(10,1)} #{aux(10,2)} #{aux(10,3)} |"
+		puts "| #{points(1,1)} #{points(1,2)} | #{points(2,1)} #{points(2,2)} | #{points(3,1)} #{points(3,2)} | #{points(4,1)} #{points(4,2)} | #{points(5,1)} #{points(5,2)} | #{points(6,1)} #{points(6,2)} | #{points(7,1)} #{points(7,2)} | #{points(8,1)} #{points(8,2)} | #{points(9,1)} #{points(9,2)} | #{points(10,1)} #{points(10,2)} #{points(10,3)} |"
 		puts "+-------------------------------------------------------------+"
-		puts "|#{aux2(1)}|#{aux2(2)}|#{aux2(3)}|#{aux2(4)}|#{aux2(5)}|#{aux2(6)}|#{aux2(7)}|#{aux2(8)}|#{aux2(9)}| #{aux2(10)} |"
+		puts "|#{points_frame(1)}|#{points_frame(2)}|#{points_frame(3)}|#{points_frame(4)}|#{points_frame(5)}|#{points_frame(6)}|#{points_frame(7)}|#{points_frame(8)}|#{points_frame(9)}| #{points_frame(10)} |"
 		puts "+-------------------------------------------------------------+"
 		puts
 		if score == 1
-			puts "Neste momento, o score é de #{score} ponto"
+			puts "At this point, the score is 1 point"
 		else
-			puts "Neste momento, o score é de #{score} pontos"
+			puts "At this point, the score is #{score} points"
 		end
 	end
 
-	def aux (a, b)
-		if b == 1
-			if pontuacao[a].tentativa1 == nil
+	def points (move, try)
+		if try == 1
+			if frame_score[move].try1 == nil
 				" "
-			elsif pontuacao[a].tentativa1 == 10
+			elsif frame_score[move].try1 == 10
 				"X"
 			else
-				pontuacao[a].tentativa1
+				frame_score[move].try1
 			end
-		elsif b == 2
-			if pontuacao[a].tentativa2 == nil
+		elsif try == 2
+			if frame_score[move].try2 == nil
 				" "
-			elsif pontuacao[a].estado == "spare"
+			elsif frame_score[move].status == "spare"
 				"/"
-			elsif pontuacao[a].tentativa2 == 10
+			elsif frame_score[move].try2 == 10
 				"X"
 			else
-				pontuacao[a].tentativa2
+				frame_score[move].try2
 			end
 		else
-			if pontuacao[a].tentativa3 == nil
+			if frame_score[move].try3 == nil
 				" "
-			elsif pontuacao[a].tentativa3 == 10
+			elsif frame_score[move].try3 == 10
 				"X"
 			else
-				if (pontuacao[a].tentativa2 + pontuacao[a].tentativa3) == 10
+				if (frame_score[move].try2 + frame_score[move].try3) == 10
 					"/"
 				else
-					pontuacao[a].tentativa3
+					frame_score[move].try3
 				end
 			end
 		end		
 	end
 
-	def aux2 (r)
-		if pontuacao[r].pontos == nil
+	def points_frame (frame)
+		if frame_score[frame].points == nil
 			"     "
-		elsif pontuacao[r].pontos < 10
-			"  #{pontuacao[r].pontos}  "
-		elsif pontuacao[r].pontos < 100
-			" #{pontuacao[r].pontos}  "
+		elsif frame_score[frame].points < 10
+			"  #{frame_score[frame].points}  "
+		elsif frame_score[frame].points < 100
+			" #{frame_score[frame].points}  "
 		else
-			" #{pontuacao[r].pontos} "
+			" #{frame_score[frame].points} "
 		end
 	end
 end
 
-class Rodada
-	attr_accessor :tentativa1, :tentativa2, :tentativa3, :pontos, :estado, :bonus
+class Frame
+	attr_accessor :try1, :try2, :try3, :points, :status, :bonus
 
 	def initialize
-		@tentativa1 = nil
-		@tentativa2 = nil
-		@tentativa3 = nil
-		@pontos = nil
-		@estado = nil
+		@try1 = nil
+		@try2 = nil
+		@try3 = nil
+		@points = nil
+		@status = nil
 		@bonus = 0
 	end
 end
 
-
-
 =begin
-
-	# Para testes, correr a classe 'Testes'
-
-	class Testes
-		# Simulação do jogo PERFEITO
-
+	# To test, run the 'Tests' class
+	class Tests
+		# PERFECT game simulation
 		puts
-		puts "Simulação do jogo PERFEITO"
+		puts "PERFECT game simulation"
+		game = Bowling.new
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.roll(10)
+		game.detailed_score
 
-		jogo2 = Bowling.new
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.roll(10)
-		jogo2.scoreDetalhado
-
-
-		# Simulação do jogo exemplo detalhadamente
-
+		# Game simulation example in detail
 		puts
 		puts "==============================================================="
 		puts
 		puts
-		puts "Simulação do jogo exemplo detalhadamente"
-
-		jogo = Bowling.new
-		jogo.roll(1)
-		jogo.scoreDetalhado
-		jogo.roll(4)
-		jogo.scoreDetalhado
-		jogo.roll(4)
-		jogo.scoreDetalhado
-		jogo.roll(5)
-		jogo.scoreDetalhado
-		jogo.roll(6)
-		jogo.scoreDetalhado
-		jogo.roll(4)
-		jogo.scoreDetalhado
-		jogo.roll(5)
-		jogo.scoreDetalhado
-		jogo.roll(5)
-		jogo.scoreDetalhado
-		jogo.roll(10)
-		jogo.scoreDetalhado
-		jogo.roll(0)
-		jogo.scoreDetalhado
-		jogo.roll(1)
-		jogo.scoreDetalhado
-		jogo.roll(7)
-		jogo.scoreDetalhado
-		jogo.roll(3)
-		jogo.scoreDetalhado
-		jogo.roll(6)
-		jogo.scoreDetalhado
-		jogo.roll(4)
-		jogo.scoreDetalhado
-		jogo.roll(10)
-		jogo.scoreDetalhado
-		jogo.roll(2)
-		jogo.scoreDetalhado
-		jogo.roll(8)
-		jogo.scoreDetalhado
-		jogo.roll(6)
-		jogo.scoreDetalhado
+		puts "Game simulation example in detail"
+		game2 = Bowling.new
+		game2.roll(1)
+		game2.detailed_score
+		game2.roll(4)
+		game2.detailed_score
+		game2.roll(4)
+		game2.detailed_score
+		game2.roll(5)
+		game2.detailed_score
+		game2.roll(6)
+		game2.detailed_score
+		game2.roll(4)
+		game2.detailed_score
+		game2.roll(5)
+		game2.detailed_score
+		game2.roll(5)
+		game2.detailed_score
+		game2.roll(10)
+		game2.detailed_score
+		game2.roll(0)
+		game2.detailed_score
+		game2.roll(1)
+		game2.detailed_score
+		game2.roll(7)
+		game2.detailed_score
+		game2.roll(3)
+		game2.detailed_score
+		game2.roll(6)
+		game2.detailed_score
+		game2.roll(4)
+		game2.detailed_score
+		game2.roll(10)
+		game2.detailed_score
+		game2.roll(2)
+		game2.detailed_score
+		game2.roll(8)
+		game2.detailed_score
+		game2.roll(6)
+		game2.detailed_score
 	end
-
 =end
