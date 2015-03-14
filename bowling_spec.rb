@@ -128,7 +128,7 @@ RSpec.describe Bowling do
 			b.roll 0; b.roll 0;
 			b.roll 0; b.roll 0;
 			b.roll 0; b.roll 0;
-		   	expect(b.frame).to eq 10
+		   	expect(b.score).to eq 0
 		end 
 
 		it 'all spare s - test #score' do
@@ -214,7 +214,6 @@ RSpec.describe Bowling do
 			b.roll 10; b.roll 10 ; b.roll 10
 			b.roll 10; b.roll 10 ; b.roll 10
 			expect(b.game).to eq ["strike", "strike", "strike", "strike", "strike", "strike", "strike", "strike", "strike", "strike", "strike", "strike"]
-			expect(b.frame).to eq 12
 		   	expect(b.score).to eq 300
 		end 
 
@@ -236,7 +235,6 @@ RSpec.describe Bowling do
 			b.roll 5; b.roll 5;
 			b.roll 5; b.roll 5;
 			expect(b.game).to eq [5, "spare", 5, "spare", 5, "spare", 5, "spare", 5, "spare", 5, "spare", 5, "spare", 5, "spare", 5, "spare", 5, "spare", 5]
-			expect(b.frame).to eq 11
 		   	expect(b.score).to eq 150
 		end 
 	end
