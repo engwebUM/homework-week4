@@ -25,98 +25,63 @@ equal 100 lines of code, and more public methods than private ones.
 
 ### New version of the code
 
+```ruby
 class Frame
-
   attr_reader :firstL, :secondL, :flagSituation, :bonus
-  
   def initialize
-  
     @firstL = -1
-    
     @secondL = -1
-    
     @flagSituation = "N" #Normal situation: N || Strike: ST || Spare: SP
-    
     @bonus = -1
-    
   end
 
   def rollFirstLaunch(pins)
-  
     if(pins == 10) then @flagSituation = "ST" end
-    
     @firstL = pins
-    
   end
 
   def rollSecondLaunch(pins)
-  
     if(@firstL + pins == 10) then @flagSituation = "SP" end
-    
     @secondL = pins
-    
   end
 
   def rollBonus(pins)
-  
     @bonus = pins
-    
   end
   
-  def scoreOfWholeFrame(index)
-  
+  def scoreOfWholeFrame(index)    
     return getFirstLaunch + getSecondLaunch + getBonusLaunch
-    
   end
   
   def getFirstLaunch
-  
     if(@firstL != -1) then @firstL else 0 end
-    
   end
   
   def getSecondLaunch
-  
     if(@secondL != -1) then @secondL else 0 end
-    
   end
   
   def getBonusLaunch
-  
   	if(@bonus != -1) then @bonus else 0 end
-  	
   end
-  
 end
 
 class Bowling
-
   attr_reader :frameList
 
   def initialize
-  
     @frameList = []
-    
   end
 
   def roll(pins)
-  
     if(pins < 0 or pins > 10)
-    
       "ErrNoPins: Invalid number of pins"
-      
     elsif(@frameList.size == 0)
-    
       frame = Frame.new
-      
       frame.rollFirstLaunch(pins)
-      
       @frameList.push(frame)
-      
     elsif(@frameList.size == 10)
-    
       lastFrameOfGame(pins)
-      
     elsif(@frameList[@frameList.size - 1].firstL == -1)
       @frameList[@frameList.size - 1].rollFirstLaunch(pins)
       if(@frameList[@frameList.size - 1].flagSituation == "ST")
@@ -204,3 +169,4 @@ class Bowling
     return total
   end
 end
+```
