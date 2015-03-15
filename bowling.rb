@@ -1,90 +1,141 @@
 class Bowling
-  attr_reader :rolls
+  attr_reader :frames
 
   def initialize
-    @rolls = Array.new(21)
+    @frames = Array.new(9) { Frame.new }
+    @frames << LastFrame.new
   end
 
   def roll(pins)
     fail 'game over' if game_over?
     fail 'impossible play' if pins < 0 || pins > pins_standing
 
-    rolls[playing_roll] = pins
+    playing_frame.roll(pins)
+    return if game_over?
     if strike_on_regular_frame? || neither_strike_nor_spare_on_last_frame?
-      rolls[playing_roll] = 0   # then next ball is set from nil to 0
+      playing_frame.roll(0)
     end
   end
 
   def score
     points = 0
-    (0..9).each do |frame|
-      if strike?(frame)
-        points += 10 + bonus_strike(frame)
-      elsif spare?(frame)
-        points += 10 + bonus_spare(frame)
-      else
-        points += frame_points(frame)
-      end
-    end
+    frames.each_with_index { |frame, index|
+      points += frame.points
+      if frame.strike? && index < 9
+        points += bonus_strike(index)
+      elsif frame.spare? && index < 9
+        points += bonus_spare(index)
+      end }
     points
   end
 
   private
 
-  def bonus_spare(frame)
-    rolls[2 * frame + 2].to_i
+  def bonus_spare(index)
+    frames[index + 1].first
   end
 
-  def bonus_strike(frame)
-    if frame < 9
-      rolls[2 * frame + 2].to_i + if strike?(frame + 1)
-                                    rolls[2 * frame + 4].to_i
-                                  else
-                                    rolls[2 * frame + 3].to_i
-                                  end
-    else  # tenth frame
-      rolls[2 * frame + 1].to_i + rolls[2 * frame + 2].to_i
-    end
-  end
-
-  def frame_points(frame)
-    rolls[2 * frame].to_i + rolls[2 * frame + 1].to_i
+  def bonus_strike(index)
+    bonus_spare(index) + if frames[index + 1].strike? && index < 8
+                           frames[index + 2].first
+                         else
+                           frames[index + 1].second
+                         end
   end
 
   def game_over?
-    rolls.find_index(nil).nil?
-  end
-
-  def neither_strike_nor_spare_on_last_frame?
-    (playing_roll > 19) && !(strike?(9) || spare?(9))
+    frames.each { |frame|
+      if !frame.over?
+        return false
+      end }
+    return true
   end
 
   def pins_standing
-    if playing_roll <= 18
-      playing_roll.even? ? pins = 10 : pins = 10 - rolls[playing_roll - 1]
-    else  # tenth frame
-      if spare?(9) # 10 pins on 3rd ball if tenth frame was a spare
-        pins = 10
-      else # 2nd and (eventual) 3rd balls both follow this rule in other occasions
-        rolls[playing_roll - 1] == 10 ? pins = 10 : pins = 10 - rolls[playing_roll - 1]
-      end
-    end
-    pins
+    playing_frame.pins_standing
   end
 
-  def playing_roll
-    rolls.find_index(nil).to_i
-  end
-
-  def spare?(frame)
-    !strike?(frame) && (rolls[2 * frame].to_i + rolls[2 * frame + 1].to_i == 10)
-  end
-
-  def strike?(frame)
-    rolls[2 * frame].to_i == 10
+  def playing_frame
+    frames.each { |frame|
+      if !frame.over?
+        return frame
+      end }
+    return nil
   end
 
   def strike_on_regular_frame?
-    (playing_roll < 18) && strike?(playing_roll / 2) && (!game_over?)
+    if frames.find_index(playing_frame) < 9
+      playing_frame.nil? ? false : playing_frame.strike?
+    end
+  end
+
+  def neither_strike_nor_spare_on_last_frame?
+    playing_frame.playing_roll == 2 && !(playing_frame.strike? || playing_frame.spare?)
+  end
+end
+
+class Frame
+  attr_reader :rolls
+
+  def initialize
+    @rolls = [nil, nil]
+  end
+
+  def roll(pins)
+    @rolls[playing_roll] = pins
+  end
+
+  def over?
+    rolls.find_index(nil).nil?
+  end
+
+  def playing_roll
+    rolls.find_index(nil)
+  end
+
+  def first
+    rolls[0].to_i
+  end
+
+  def second
+    rolls[1].to_i
+  end
+
+  def points
+    first + second
+  end
+
+  def pins_standing
+    playing_roll == 0 ? 10 : 10 - first
+  end
+
+  def spare?
+    !strike? && (first + second == 10)
+  end
+
+  def strike?
+    first == 10
+  end
+end
+
+class LastFrame < Frame
+  def initialize
+    @rolls = [nil, nil, nil]
+  end
+
+  def third
+    rolls[2].to_i
+  end
+
+  def points
+    first + second + third
+  end
+
+  def pins_standing
+    if playing_roll == 0 || spare?
+      10
+    else
+      rolls[playing_roll - 1] == 10 ? 10 : 10 - rolls[playing_roll - 1]
+    end
   end
 end
