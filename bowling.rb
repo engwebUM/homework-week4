@@ -3,6 +3,7 @@ class Bowling
   def initialize
     @frames = Array.new(10) { Frame.new }
     @score  = Score.new(@frames)
+    @printer = Printer.new(@frames)
     @current_frame = 0
   end
 
@@ -17,6 +18,16 @@ class Bowling
     end
   end
 
+  def score
+    @score.score
+  end
+
+  def print
+    @printer.print_frames
+    @score.print_score
+  end
+
+  private
   def play_roll(pins)
     case @current_frame
     when 0..8
@@ -72,15 +83,6 @@ class Bowling
     end
     return current_roll_index
   end
-
-  def score
-    @score.score
-    puts "|\n Final Score: " + @score.score.to_s + "\n\n"
-  end
-
-  def print
-    Printer.new(@frames)
-  end
 end
 
 # Class Responsable for maintain the score methods
@@ -106,6 +108,11 @@ class Score
     total_score + sum_rolls_in_frame(9)
   end
 
+  def print_score
+    puts "|\n Final Score: " + score.to_s + "\n\n"
+  end
+
+  private
   def calculate_score
     if @frames[@current_frame].strike?
       return calculate_score_strike
@@ -143,19 +150,19 @@ end
 class Printer
   def initialize(frames)
     @frames = frames
-    print_frames
-  end
-
-  def print_roll(frame)
-    frame.rolls.each do |roll_aux|
-      print ' ' + roll_aux.to_s + ' '
-    end
   end
 
   def print_frames
     @frames.each do |frame|
       print ' |'
       print_roll(frame)
+    end
+  end
+
+  private
+  def print_roll(frame)
+    frame.rolls.each do |roll_aux|
+      print ' ' + roll_aux.to_s + ' '
     end
   end
 end
