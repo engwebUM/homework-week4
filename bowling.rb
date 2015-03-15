@@ -19,7 +19,3 @@ class Bowling
     @s.score
   end
 end
-
-
-a=[1,2,3,4,5]
-p a[a.size-1]

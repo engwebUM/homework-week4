@@ -16,10 +16,39 @@ class Spare_Score
 
   @private 
 
-  def string_to_score (position)
-    if @score.game[position]=='strike' then return 10 end
-    if @score.game[position]=='spare' then return 10-string_to_score(position-1) end
-    if @score.game[position].is_a? Numeric then return @score.game[position] end
+  def string_to_score(position)
+    total=0
+    total+= string_is_strike? (position)
+    total+= string_is_spare? (position)
+    total+= string_is_a_number(position)
+    total
+  end
+
+  def string_is_strike?(position)
+    total=0
+    if @score.game[position]=='strike' 
+    then 
+      total= 10 
+    end
+    total
+  end
+
+  def string_is_spare?(position)
+    total=0
+    if @score.game[position]=='spare' 
+    then 
+      total= 10-string_to_score(position-1)
+    end
+    total
+  end
+
+  def string_is_a_number(position)
+    total=0
+    if @score.game[position].is_a? Numeric
+    then 
+      total= @score.game[position] 
+    end
+    total
   end
 
 end
