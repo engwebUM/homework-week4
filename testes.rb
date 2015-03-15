@@ -10,6 +10,7 @@ class Teste1
 	def adiciona
 		teste2 = Teste2.new(self) 
 		teste2.adiciona
+		
 	end
 end
 
