@@ -133,17 +133,26 @@ class Bowling
       @rolls[@currentlyRollNumber-3] += pins
     end
   end
+end
 
-  def score
+
+class Score
+  def initialize(score)
+    @score = score
+  end
+
+  def total_score
     $score = 0
-    for i in 0...21
-      $score += rollScore(i)
+    for i in 0...@score.length
+      $score += roll_score(i)
     end
     return $score
   end
 
-  def rollScore(iteration)
-    $roll_score = @rolls[iteration]
+  private
+
+  def roll_score(iteration)
+    $roll_score = @score[iteration]
     if($roll_score == "X" || $roll_score == "/")
       $roll_score = 0
     end
