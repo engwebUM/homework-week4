@@ -1,5 +1,5 @@
 # Long Method
-In the solution of this project not have a smell long method because we can't split methods in more auxiliary methods and the local variables are inside of the methods.
+In the solution of this project have a smell long method because we have the method `score` very long, so we need split method into many auxiliary methods, and we can see that in file `bowling.rb`.
 
 # Large Class
 We have only class (Bowling), and it's smaller, simple and have a single responsability, so this smell is not in this class.
