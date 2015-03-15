@@ -1,5 +1,4 @@
-load 'roll_frame_10_strike.rb'
-load 'roll_frame_10_spare.rb'
+load 'roll_frame_10_bonus.rb'
 load 'roll_frame_between_0_and_10.rb'
 
 
@@ -20,7 +19,7 @@ class Roll
     @valid_roll= 0
   end
 
-  def roll(pins)
+  def roll_verification(pins)
     if (@valid_roll != -1) 
     then
       @valid_roll = 0
@@ -37,7 +36,7 @@ class Roll
     if pins<=10 and pins>=0 and @frame>=10 and @frame<12 and (@game.last=='strike' or (@game.take(@game.size-1)).last=='strike')
     then
       @valid_roll =1
-      frame_10_strike_bonus = Roll_Frame_10_Strike_Bonus.new(self)
+      frame_10_strike_bonus = Roll_Frame_10_Bonus.new(self)
       frame_10_strike_bonus.add_bonus(pins)
       @frame += 1
     end
@@ -47,7 +46,7 @@ class Roll
     if pins<=10 and pins>=0 and @frame==10 and @game.last=='spare'
     then
       @valid_roll =1
-      frame_10_spare_bonus = Roll_Frame_10_Spare_Bonus.new(self)
+      frame_10_spare_bonus = Roll_Frame_10_Bonus.new(self)
       frame_10_spare_bonus.add_bonus(pins)
       @frame += 1
     end 

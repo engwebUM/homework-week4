@@ -20,7 +20,7 @@ class Score
     @is_valid = 0    #is a valid count??  (if no then -1) 
   end
 
-  def score
+  def score_verification
     @bowling.game.each do |roll|
       is_strike?(roll)
       is_spare?(roll)

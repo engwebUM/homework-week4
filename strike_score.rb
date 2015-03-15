@@ -26,30 +26,27 @@ class Strike_Score
   end
 
   def string_is_strike?(position)
-    total=0
     if @score.game[position]=='strike' 
     then 
-      total= 10 
+      return 10 
     end
-    total
+    return 0
   end
 
   def string_is_spare?(position)
-    total=0
     if @score.game[position]=='spare' 
     then 
-      total= 10-string_to_score(position-1)
+      return 10-string_to_score(position-1)
     end
-    total
+    return 0
   end
 
   def string_is_a_number(position)
-    total=0
     if @score.game[position].is_a? Numeric
     then 
-      total= @score.game[position] 
+      return @score.game[position] 
     end
-    total
+    return 0 
   end
 
 end

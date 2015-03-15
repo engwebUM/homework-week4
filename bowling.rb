@@ -12,10 +12,10 @@ class Bowling
   end 
  
   def roll(pins)
-    @r.roll(pins)
+    @r.roll_verification(pins)
   end
 
   def score
-    @s.score
+    @s.score_verification
   end
 end

@@ -1,6 +1,6 @@
 class Roll_Frame_Between_0_and_10
 
-  def initialize (roll)
+  def initialize(roll)
     @roll = roll
   end
 
