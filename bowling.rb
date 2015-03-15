@@ -1,136 +1,136 @@
 class Bowling
 
-  attr_reader :currentlyRollNumber, :rolls
+  attr_reader :currently_roll_number, :rolls
 
   def initialize
     @rolls = Array.new(21, 0)
-    @currentlyRollNumber = 0
+    @currently_roll_number = 0
   end
 
   def roll(pins)
-    rollType(pins)
-    @currentlyRollNumber += 1
+    roll_type(pins)
+    @currently_roll_number += 1
   end
 
-  def rollType(pins)
-    if(@currentlyRollNumber < 18)
-      normalRoll(pins)
-    elsif (@currentlyRollNumber == 18)
+  def roll_type(pins)
+    if(@currently_roll_number < 18)
+      normal_roll(pins)
+    elsif (@currently_roll_number == 18)
       roll18(pins)
-    elsif (@currentlyRollNumber == 19)
+    elsif (@currently_roll_number == 19)
       roll19(pins)
-    elsif (@currentlyRollNumber == 20)
+    elsif (@currently_roll_number == 20)
       roll20(pins)
     else
       raise "No rolls left"
     end
   end
 
-  def normalRoll(pins)
-    if (@currentlyRollNumber.odd?)
-      oddFrame(pins)
+  def normal_roll(pins)
+    if (@currently_roll_number.odd?)
+      odd_frame(pins)
     else
-      evenFrame(pins)
+      even_frame(pins)
     end
   end
 
   def roll18(pins)
-    verifyStrikeOrSpareBonus(pins)
-    @rolls[@currentlyRollNumber] = pins
+    verify_strike_or_spare_bonus(pins)
+    @rolls[@currently_roll_number] = pins
   end
 
   def roll19(pins)
-    verifyStrikeBonusFrame19(pins)
-    @rolls[@currentlyRollNumber] = pins
-    if ((pins+@rolls[@currentlyRollNumber-1])<10)
-      @rolls[@currentlyRollNumber] = pins
-    elsif ((pins+@rolls[@currentlyRollNumber-1]) == 10)
-      @rolls[@currentlyRollNumber-1] = 10
-      @rolls[@currentlyRollNumber] = "/"
+    verify_strike_bonus_frame19(pins)
+    @rolls[@currently_roll_number] = pins
+    if ((pins+@rolls[@currently_roll_number-1])<10)
+      @rolls[@currently_roll_number] = pins
+    elsif ((pins+@rolls[@currently_roll_number-1]) == 10)
+      @rolls[@currently_roll_number-1] = 10
+      @rolls[@currently_roll_number] = "/"
     end
   end
 
   def roll20(pins)
-    if (@rolls[@currentlyRollNumber-1] == "/" || @rolls[@currentlyRollNumber-1] == 10 || @rolls[@currentlyRollNumber-2] == 10)
-      @rolls[@currentlyRollNumber] += pins
+    if (@rolls[@currently_roll_number-1] == "/" || @rolls[@currently_roll_number-1] == 10 || @rolls[@currently_roll_number-2] == 10)
+      @rolls[@currently_roll_number] += pins
     else
       raise "You didn't spared/striked before, you can't play the 3rd ball"
     end
   end
 
-  def oddFrame(pins)
-    verifyStrikeBonus(pins)
-    verifyStrikeBonus2(pins)
-    secondTry(pins)
+  def odd_frame(pins)
+    verify_strike_bonus(pins)
+    verify_strike_bonus2(pins)
+    second_try(pins)
   end
 
-  def evenFrame(pins)
-    verifyStrikeOrSpareBonus(pins)
-    verifyStrikeBonus3(pins)
-    firstTry(pins)
+  def even_frame(pins)
+    verify_strike_or_spare_bonus(pins)
+    verify_strike_bonus3(pins)
+    first_try(pins)
   end
 
-  def firstTry(pins)
+  def first_try(pins)
     if (pins == 10)
-      strikeCase
-      @currentlyRollNumber += 1
+      strike_case
+      @currently_roll_number += 1
     else
-      normalCase(pins)
+      normal_case(pins)
     end
   end
 
-  def secondTry(pins)
-    if ((pins+@rolls[@currentlyRollNumber-1])<10)
-      normalCase(pins)
+  def second_try(pins)
+    if ((pins+@rolls[@currently_roll_number-1])<10)
+      normal_case(pins)
     else
-      spareCase
+      spare_case
     end
   end
 
-  def strikeCase
-    @rolls[@currentlyRollNumber] = 10
-    @rolls[@currentlyRollNumber+1] = "X"
+  def strike_case
+    @rolls[@currently_roll_number] = 10
+    @rolls[@currently_roll_number+1] = "X"
   end
 
-  def normalCase(pins)
-    @rolls[@currentlyRollNumber] = pins
+  def normal_case(pins)
+    @rolls[@currently_roll_number] = pins
   end
 
-  def spareCase
-    @rolls[@currentlyRollNumber-1] = 10
-    @rolls[@currentlyRollNumber] = "/"
+  def spare_case
+    @rolls[@currently_roll_number-1] = 10
+    @rolls[@currently_roll_number] = "/"
   end
 
-  def verifyStrikeBonus(pins)
-    if(@rolls[@currentlyRollNumber-2] == "X")
-      @rolls[@currentlyRollNumber-3] += pins
+  def verify_strike_bonus(pins)
+    if(@rolls[@currently_roll_number-2] == "X")
+      @rolls[@currently_roll_number-3] += pins
     end
   end
 
-  def verifyStrikeBonus2(pins)
-    if(@rolls[@currentlyRollNumber-2] == "X" && @rolls[@currentlyRollNumber-4] == "X")
-      @rolls[@currentlyRollNumber-5] += pins
+  def verify_strike_bonus2(pins)
+    if(@rolls[@currently_roll_number-2] == "X" && @rolls[@currently_roll_number-4] == "X")
+      @rolls[@currently_roll_number-5] += pins
     end
   end
 
-  def verifyStrikeBonus3(pins)
-    if(@rolls[@currentlyRollNumber-1] == "X" && @rolls[@currentlyRollNumber-3] == "X")
-      @rolls[@currentlyRollNumber-4] += pins
+  def verify_strike_bonus3(pins)
+    if(@rolls[@currently_roll_number-1] == "X" && @rolls[@currently_roll_number-3] == "X")
+      @rolls[@currently_roll_number-4] += pins
     end
   end
 
-  def verifyStrikeOrSpareBonus(pins)
-    if(@rolls[@currentlyRollNumber-1] == "/" || @rolls[@currentlyRollNumber-1] == "X")
-      @rolls[@currentlyRollNumber-2] += pins
+  def verify_strike_or_spare_bonus(pins)
+    if(@rolls[@currently_roll_number-1] == "/" || @rolls[@currently_roll_number-1] == "X")
+      @rolls[@currently_roll_number-2] += pins
     end
   end
 
-  def verifyStrikeBonusFrame19(pins)
-    if(@rolls[@currentlyRollNumber-2] == "X")
-      @rolls[@currentlyRollNumber-5] += pins
+  def verify_strike_bonus_frame19(pins)
+    if(@rolls[@currently_roll_number-2] == "X")
+      @rolls[@currently_roll_number-5] += pins
     end
-    if(@rolls[18] == 10 && @rolls[@currentlyRollNumber-2] == "X")
-      @rolls[@currentlyRollNumber-3] += pins
+    if(@rolls[18] == 10 && @rolls[@currently_roll_number-2] == "X")
+      @rolls[@currently_roll_number-3] += pins
     end
   end
 end
