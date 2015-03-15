@@ -3,7 +3,7 @@ class Frame
   PINS_MAX = 10
   ROLLS_MAX = 2
 
-  attr_accessor :rolls
+  attr_accessor :rolls, :nextFrame
 
   def initialize
     @rolls = []
@@ -38,8 +38,8 @@ class Frame
   end
 
   def strikeBonus
-    if(nextFrame.finish?)
-      if(nextFrame.strike?)
+    if nextFrame.finish?
+      if nextFrame.strike?
         PINS_MAX+nextFrame.spareBonus
       else
         nextFrame.result
@@ -55,20 +55,12 @@ class Frame
     nextFrame.rolls.first
   end
 
-  def hasNextFrame?
-    nextFrame != nil
-  end
-
   def finish?
     strike? || rolls.count == ROLLS_MAX
   end
 
   def nextFrame=(frame)
     @nextFrame = frame
-  end
-
-  def nextFrame
-    @nextFrame
   end
 
   def errorScore?
