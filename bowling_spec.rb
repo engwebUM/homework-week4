@@ -83,7 +83,7 @@ RSpec.describe Bowling do
         b.roll(4)
         b.roll(3)
         b.roll(5)
-        expect(b.score).to match(7)
+        expect(b.score).to match(12)
     end
 
     it 'rolls do anunciado com score 133 pontos' do
@@ -92,13 +92,6 @@ RSpec.describe Bowling do
         b.roll(pin)
       end
       expect(b.score).to match(133)
-    end
-
-    it 'ERRO! Jogar depois do jogo estar terminado' do
-      expect{
-        rolls(21,0)
-        b.score
-      }.to raise_error "ErroTerminado"
     end
 
     it 'ERRO! score > 10 num frame' do
