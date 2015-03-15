@@ -1,17 +1,2 @@
-# Homework - Week 4
-
-Take your solution for [last week's exercise](https://github.com/engwebUM/homework-week3),
-apply the Design Principles and Patterns we discussed, and point out the Code
-Smells you can find.
-
-The main thing in this exercise, is to understand your thought process and how
-well do you understand and apply these concepts.
-
-Submit your revised code as a pull request, and your explanation of what you've
-done should be on the pull request's description.
-
-### What do I do if my code is already great?
-
-Chances are that there will still be something you can do to improve your code,
-but if you think there isn't, you can explain why applying a certain pattern to
-your code would make it worse.
+A limpeza de código passou pela redução do tamanho dos métodos. A minha solução da semana passada tinham alguns code smells. Tanto o meu método roll, como o meu método score, tinham mais de cinco linhas, era difícil de compreender o que cada método fazia e no método score existia diferentes níveis de nesting. Para resolver este problema ambos os métodos foram divididos em métodos mais pequenos recorrendo a métodos auxiliares.
+Em relação aos padrões, ao analisar a nova solução foi possível identificar que tanto o padrão observer como o padrão strategy não poderiam ser implementados já que não se encaixavam no ambito da solução. Quanto ao padrão decorator, considerando que não existem muitos objetos relacionados, também não faria qualquer sentido implementa-lo.
