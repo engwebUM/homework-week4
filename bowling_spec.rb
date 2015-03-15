@@ -3,7 +3,7 @@ require 'rspec'
 
 RSpec.describe Bowling do
   before(:each) do
-    @b = Bowling.new
+    @b = Bowling.new(BowlingSession.new([]))
   end
 
   context '#roll' do
