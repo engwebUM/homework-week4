@@ -34,7 +34,7 @@ class Roll
   @private 
 
   def frame_10_is_Strike_case(pins)
-  	if pins<=10 and pins>=0 and @frame>=10 and @frame<12 and (@game.last=='strike' or (@game.take (@game.size-1)).last=='strike')
+  	if pins<=10 and pins>=0 and @frame>=10 and @frame<12 and (@game.last=='strike' or (@game.take(@game.size-1)).last=='strike')
     then
       @valid_roll =1
       frame_10_strike_bonus = Roll_Frame_10_Strike_Bonus.new(self)
@@ -52,7 +52,6 @@ class Roll
       @frame += 1
     end 
   end
-
 
   def frame_between_0_and_10_case(pins)
     if pins<=10 and pins>=0 and @frame<10

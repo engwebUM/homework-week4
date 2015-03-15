@@ -1,7 +1,19 @@
+load 'strike_score.rb'
+load 'spare_score.rb'
+load 'normal_score.rb'
+
+
 class Score
+
+  attr_accessor :game 
+  attr_accessor :total
+  attr_accessor :position
+  attr_accessor :frame
+  attr_accessor :is_valid
 
   def initialize(bowling)
     @bowling=bowling
+    @game=bowling.game
     @position=0      #Array position
     @total=0         #total score
     @frame = 1       #frame number
@@ -12,7 +24,7 @@ class Score
     @bowling.game.each do |roll|
       is_strike?(roll)
       is_spare?(roll)
-      normal_point_score(roll)
+      is_normal_point_score?(roll)
       invalid_score(roll)
       @is_valid += 1;
     end
@@ -21,55 +33,30 @@ class Score
 
   @private 
 
-  def string_to_score (position)
-    if @bowling.game[position]=='strike' then return 10 end
-    if @bowling.game[position]=='spare' then return 10-string_to_score(position-1) end
-    if @bowling.game[position].is_a? Numeric then return @bowling.game[position] end
-  end
-
   def is_strike?(roll)
     if roll =='strike'
     then
-      strike_score
+      add_strike_score = Strike_Score.new(self)
+      add_strike_score.strike_score
       @position += 1
       @frame += 1
     end
   end
 
-  def strike_score 
-    if @bowling.game[@position+1]!= nil and @bowling.game[@position+2]!=nil and @frame<10
-    then 
-      @total += 10 + string_to_score(@position+1) + string_to_score(@position+2)
-      @is_valid=0
-    else 
-      @total += 10
-      @is_valid=0
-    end 
-  end
-
   def is_spare?(roll)
     if roll =='spare'
     then
-      spare_score
+      add_spare_score = Spare_Score.new(self)
+      add_spare_score.spare_score
       @position += 1
     end
   end
 
-  def spare_score
-    if @bowling.game[@position+1]!=nil and @frame<10
-    then 
-      @total += (10-@bowling.game[@position-1]) + string_to_score(@position+1)
-      @is_valid=0
-    else 
-      @total+=(10-@bowling.game[@position-1])
-      @is_valid=0
-    end 
-  end
-
-  def normal_point_score(roll)
+  def is_normal_point_score?(roll)
     if roll.is_a? Numeric and @is_valid==0 
     then 
-      @total += roll 
+      add_normal_score = Normal_Score.new(self)
+      add_normal_score.normal_score(roll)
       @position +=1 
     end 
   end
