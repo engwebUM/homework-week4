@@ -14,7 +14,7 @@ class Bowling
 
   def roll(pins)
     if(frame_current.finish?)
-      frames << @frame_current = frame_current.nextFrame = Frame.new
+      frames << @frame_current = frame_current.next_frame = Frame.new
     end
     frame_current.roll(pins)
   end
