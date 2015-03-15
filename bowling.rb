@@ -20,11 +20,11 @@ class Bowling
   end
 
   def score
-    res = 0
-    number_frames.times do |f|
-      res += frames[f].score
+    result = 0
+    number_frames.times do |index|
+      result += frames[index].score
     end
-    res
+    result
   end
 
   def gameover?
