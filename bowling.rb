@@ -7,18 +7,67 @@ class Bowling
     @currentlyRollNumber = 0
   end
 
-  def strikeCase
-    @rolls[@currentlyRollNumber] = 10
-    @rolls[@currentlyRollNumber+1] = "X"
+  def roll(pins)
+    rollType(pins)
+    @currentlyRollNumber += 1
   end
 
-  def normalCase(pins)
+  def rollType(pins)
+    if(@currentlyRollNumber < 18)
+      normalRoll(pins)
+    elsif (@currentlyRollNumber == 18)
+      roll18(pins)
+    elsif (@currentlyRollNumber == 19)
+      roll19(pins)
+    elsif (@currentlyRollNumber == 20)
+      roll20(pins)
+    else
+      raise "No rolls left"
+    end
+  end
+
+  def normalRoll(pins)
+    if (@currentlyRollNumber.odd?)
+      oddFrame(pins)
+    else
+      evenFrame(pins)
+    end
+  end
+
+  def roll18(pins)
+    verifyStrikeOrSpareBonus(pins)
     @rolls[@currentlyRollNumber] = pins
   end
 
-  def spareCase
-    @rolls[@currentlyRollNumber-1] = 10
-    @rolls[@currentlyRollNumber] = "/"
+  def roll19(pins)
+    verifyStrikeBonusFrame19(pins)
+    @rolls[@currentlyRollNumber] = pins
+    if ((pins+@rolls[@currentlyRollNumber-1])<10)
+      @rolls[@currentlyRollNumber] = pins
+    elsif ((pins+@rolls[@currentlyRollNumber-1]) == 10)
+      @rolls[@currentlyRollNumber-1] = 10
+      @rolls[@currentlyRollNumber] = "/"
+    end
+  end
+
+  def roll20(pins)
+    if (@rolls[@currentlyRollNumber-1] == "/" || @rolls[@currentlyRollNumber-1] == 10 || @rolls[@currentlyRollNumber-2] == 10)
+      @rolls[@currentlyRollNumber] += pins
+    else
+      raise "You didn't spared/striked before, you can't play the 3rd ball"
+    end
+  end
+
+  def oddFrame(pins)
+    verifyStrikeBonus(pins)
+    verifyStrikeBonus2(pins)
+    secondTry(pins)
+  end
+
+  def evenFrame(pins)
+    verifyStrikeOrSpareBonus(pins)
+    verifyStrikeBonus3(pins)
+    firstTry(pins)
   end
 
   def firstTry(pins)
@@ -36,6 +85,20 @@ class Bowling
     else
       spareCase
     end
+  end
+
+  def strikeCase
+    @rolls[@currentlyRollNumber] = 10
+    @rolls[@currentlyRollNumber+1] = "X"
+  end
+
+  def normalCase(pins)
+    @rolls[@currentlyRollNumber] = pins
+  end
+
+  def spareCase
+    @rolls[@currentlyRollNumber-1] = 10
+    @rolls[@currentlyRollNumber] = "/"
   end
 
   def verifyStrikeBonus(pins)
@@ -71,70 +134,6 @@ class Bowling
     end
   end
 
-  def frameType(pins)
-    if(@currentlyRollNumber < 18)
-      normalRoll(pins)
-    elsif (@currentlyRollNumber == 18)
-      frame18(pins)
-    elsif (@currentlyRollNumber == 19)
-      frame19(pins)
-    elsif (@currentlyRollNumber == 20)
-      frame20(pins)
-    else
-      raise "No rolls left"
-    end
-  end
-
-  def normalRoll(pins)
-    if (@currentlyRollNumber.odd?)
-      oddFrame(pins)
-    else
-      evenFrame(pins)
-    end
-  end
-
-  def oddFrame(pins)
-    verifyStrikeBonus(pins)
-    verifyStrikeBonus2(pins)
-    secondTry(pins)
-  end
-
-  def evenFrame(pins)
-    verifyStrikeOrSpareBonus(pins)
-    verifyStrikeBonus3(pins)
-    firstTry(pins)
-  end
-
-  def frame18(pins)
-    verifyStrikeOrSpareBonus(pins)
-    @rolls[@currentlyRollNumber] = pins
-  end
-
-  def frame19(pins)
-    verifyStrikeBonusFrame19(pins)
-    @rolls[@currentlyRollNumber] = pins
-    if ((pins+@rolls[@currentlyRollNumber-1])<10)
-      @rolls[@currentlyRollNumber] = pins
-    elsif ((pins+@rolls[@currentlyRollNumber-1]) == 10)
-      @rolls[@currentlyRollNumber-1] = 10
-      @rolls[@currentlyRollNumber] = "/"
-    end
-  end
-
-  def frame20(pins)
-    if (@rolls[@currentlyRollNumber-1] == "/" || @rolls[@currentlyRollNumber-1] == 10 || @rolls[@currentlyRollNumber-2] == 10)
-      @rolls[@currentlyRollNumber] += pins
-    else
-      raise "You didn't spared/striked before, you can't play the 3rd ball"
-    end
-  end
-
-
-  def roll(pins)
-    frameType(pins)
-    @currentlyRollNumber += 1
-  end
-
   def score
     $score = 0
     for i in 0...21
@@ -144,10 +143,10 @@ class Bowling
   end
 
   def rollScore(iteration)
-    $frame_score = @rolls[iteration]
-    if($frame_score == "X" || $frame_score == "/")
-      $frame_score = 0
+    $roll_score = @rolls[iteration]
+    if($roll_score == "X" || $roll_score == "/")
+      $roll_score = 0
     end
-    return $frame_score
+    return $roll_score
   end
 end
