@@ -87,7 +87,6 @@ end
 class Score
   def initialize(frames)
     @frames = frames
-    @current_frame = 0
   end
 
   def sum_rolls_in_frame(frame_index)
@@ -100,7 +99,7 @@ class Score
 
   def score
     total_score = 0
-    for @current_frame in 0 ... @frames.size - 1
+    for @current_frame in 0...@frames.size - 1
       total_score += calculate_score
     end
 
@@ -125,8 +124,8 @@ class Score
     end
   end
 
-  def calculate_score_spare(frame_index = @current_frame)
-    sum_rolls_in_frame(frame_index) + @frames[frame_index + 1].rolls[0].to_i
+  def calculate_score_spare(index = @current_frame)
+    sum_rolls_in_frame(index) + @frames[index + 1].rolls[0].to_i
   end
 
   def calculate_next_two_pins(index = @current_frame)
@@ -198,6 +197,7 @@ game = Bowling.new
 9.times { game.roll(10) }
 game.print
 game.score
+
 # Good Examples
 puts "\n == Good Examples =="
 game = Bowling.new
