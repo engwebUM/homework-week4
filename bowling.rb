@@ -5,7 +5,6 @@ class Bowling
   def initialize
     @rolls = Array.new(21, 0)
     @currentlyRollNumber = 0
-    #@frameResult = Array.new(10)
   end
 
   def strikeCase
@@ -74,10 +73,6 @@ class Bowling
     end
   end
 
-  def verifyDoubleStrike
-
-  end
-
   def frameType(pins)
     if(@currentlyRollNumber < 18)
       normalRoll(pins)
@@ -121,9 +116,7 @@ class Bowling
   def frame19(pins)
     verifyStrikeBonusFrame19(pins)
     @rolls[@currentlyRollNumber] = pins
-    if (@rolls[18] == 10)
-      @rolls[@currentlyRollNumber] = pins
-    elsif ((pins+@rolls[@currentlyRollNumber-1])<10)
+    if ((pins+@rolls[@currentlyRollNumber-1])<10)
       @rolls[@currentlyRollNumber] = pins
     elsif ((pins+@rolls[@currentlyRollNumber-1]) == 10)
       @rolls[@currentlyRollNumber-1] = 10
