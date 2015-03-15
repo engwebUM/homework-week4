@@ -10,23 +10,21 @@ class Bowling
   def strikeCase
     @rolls[@currentlyRollNumber] = 10
     @rolls[@currentlyRollNumber+1] = "X"
-    @currentlyRollNumber += 2
   end
 
   def normalCase(pins)
     @rolls[@currentlyRollNumber] = pins
-    @currentlyRollNumber += 1
   end
 
   def spareCase
     @rolls[@currentlyRollNumber-1] = 10
     @rolls[@currentlyRollNumber] = "/"
-    @currentlyRollNumber += 1
   end
 
   def firstTry(pins)
     if (pins == 10)
       strikeCase
+      @currentlyRollNumber += 1
     else
       normalCase(pins)
     end
@@ -110,7 +108,6 @@ class Bowling
   def frame18(pins)
     verifyStrikeOrSpareBonus(pins)
     @rolls[@currentlyRollNumber] = pins
-    @currentlyRollNumber += 1
   end
 
   def frame19(pins)
@@ -122,13 +119,11 @@ class Bowling
       @rolls[@currentlyRollNumber-1] = 10
       @rolls[@currentlyRollNumber] = "/"
     end
-    @currentlyRollNumber += 1
   end
 
   def frame20(pins)
     if (@rolls[@currentlyRollNumber-1] == "/" || @rolls[@currentlyRollNumber-1] == 10 || @rolls[@currentlyRollNumber-2] == 10)
       @rolls[@currentlyRollNumber] += pins
-      @currentlyRollNumber += 1
     else
       raise "You didn't spared/striked before, you can't play the 3rd ball"
     end
@@ -137,6 +132,7 @@ class Bowling
 
   def roll(pins)
     frameType(pins)
+    @currentlyRollNumber += 1
   end
 
   def score
