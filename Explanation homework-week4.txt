@@ -1,0 +1,20 @@
+Como já havia falado na sala de grupo, pensei o meu exercicio de uma forma diferente pois achei que o essencial do mesmo era saber trabalhar com o RSpec e afinal o ficheiro bownling.rb tinha mais importância que isso. Por isso, como o meu exercicio na minha opinião cobre a parte do RSpec necessária e relativamente a um padrão, vou abordar o homework desta semana tendo como base não alterar o código pois acho que para a finalidade do RSpec esta bem estruturado. Tenho tido dificuldades na programação em Ruby e não tenho tido tempo para investir mais no assunto pois encontro-me a trabalhar. Posto isto, passando á explicação do homework 3:
+		
+	- Na minha opinião o ficheiro bowling.rb encontra-se bem estruturado, isto porque a classe encontra-se dividida de forma a que se existirem alterações a fazer, as mesmas não vão implicar alterar significamente o código. Por exemplo: Se existir uma mudança no valor do 'Strike', facilmente alteramos o seu valor de 30 para outro valor qualquer apenas alterando na 'def strikes_score(moves)'' o 'moves.count('X') * 30' para por exemplo 'moves.count('X') * 35', ou outro valor qualquer. Posto isto acho que a classe Bownling se encontra bem organizada, pois caso existam alterações a fazer, o impacto para as fazer não é grande, ou seja, não necessitamos de alterar vários pontos. O mesmo se aplica por exemplo, caso exista um novo 'clean_move' basta adiciona-lo aos 'moves' e atribuir-lhe por exemplo o seguinte código:
+		 'def strikes_score(moves) 
+		 	moves.count('X') * 30 
+		 end'
+		 
+	- Acho que a nivel de "Single Responsability" a classe 'Bowling' se encontra bem estruturada pois cada 'def' presente na mesma se encontra distribuido de forma a que cada um tenha a sua especificidade, ou seja, cada um é responsavel por fazer determinada tarefa.
+
+	- Acho que a nivel de "Dependency Inversion" o código tambem se encontra bem estruturado, isto porque os módulos não dependem uns dos outros.
+
+	- A nivel de escrita e leitura de código, acho que o mesmo se encontra fácil de ler e perceber, o que é um objetivo do exercício. Tanto a o ficheiro Bowling.rb como a o ficheiro de testes bowling_spec.rb se encontram se de uma forma que podemos facilmente ler, e facilmente entender o que esta a fazer cada linha de código. Nos testes isso ainda é mais evidente.
+
+	- Em relação aos padrões, de certa forma neste exercicio o "Decorator" encontra-se implementado e deverá estar na maioria dos exercícios dos alunos, isto porque para efetuar uma conta do tipo 'Score' é necessário somar vários 'Roll' que vão acontecendo, para isso é necessário ler um valor, guardá-lo e na jogada seguinte somar o novo valor ao armazenado e assim sucessivamente. Como é possivel ver na classe bowling o padrão encontra-se implementado. Neste caso, acho que tambem era possivel aplicar o padrão "Observer", nomeadamente criar uma nova classe que fosse observada e tornar a 'Bowling' um observador, onde o observador ficava á escuta de quando um movimento é feito no observado('Roll', 'Strike', 'Spare') e assim atualizar por exemplo o resultado final.
+
+	- Relativamente aos "Smells" o "Long method" e o "Large class" não esta presente pois as regras para determinar se eles estão presentes não são cumpridas. A classe 'Bowling' encontra-se bem dividida em 'defs' onde cada um tem determinada função e não depende de outras, por exemplo o 'Spare' para existir não precisa do 'def Strike' isto porque estão isolados e um funciona sem o outro.
+
+	- Relativamente ao "Smell" "Future Envy" penso que tambem não esta presente no exercicio realizado. Um dos pontos que prestei atenção foi não colocar o nome da classe nos respetivos métodos.
+
+	- Finalizando a análise, acho que o código que fiz se encontra limpo, e fácil de entender até por pessoas que não estão dentro do assunto. Facilmente se consegue identificar o que cada linha apresentada faz. Apenas dizer tambem que na minha opinião, o meu exercicio corresponde ao pedido da outra semana, onde o objetivo seria a experimentação do RSpec.
