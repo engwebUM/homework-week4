@@ -3,14 +3,14 @@ class Frame
   PINS_MAX = 10
   ROLLS_MAX = 2
 
-  attr_accessor :rolls, :nextFrame
+  attr_accessor :rolls, :next_frame
 
   def initialize
     @rolls = []
   end
 
   def roll(pins)
-    if(pins>=0 && pins<=PINS_MAX)
+    if(pins >= 0 && pins <= PINS_MAX)
       rolls << pins
     else
       raise "ErroPins"
@@ -18,11 +18,11 @@ class Frame
   end
 
   def score
-    if strike?
-      result + strikeBonus
-    elsif spare?
-      result + spareBonus
-    elsif(errorScore?)
+    if(strike?)
+      result + strike_bonus
+    elsif(spare?)
+      result + spare_bonus
+    elsif(error_score?)
       raise "ErroScore"
     else
       result
@@ -37,12 +37,12 @@ class Frame
     rolls.first == PINS_MAX
   end
 
-  def strikeBonus
-    if nextFrame.finish?
-      if nextFrame.strike?
-        PINS_MAX+nextFrame.spareBonus
+  def strike_bonus
+    if(next_frame.finish?)
+      if(next_frame.strike?)
+        PINS_MAX + next_frame.spare_bonus
       else
-        nextFrame.result
+        next_frame.result
       end
     end
   end
@@ -51,19 +51,19 @@ class Frame
     result == PINS_MAX
   end
 
-  def spareBonus
-    nextFrame.rolls.first
+  def spare_bonus
+    next_frame.rolls.first
   end
 
   def finish?
     strike? || rolls.count == ROLLS_MAX
   end
 
-  def nextFrame=(frame)
-    @nextFrame = frame
+  def next_frame=(frame)
+    @next_frame = frame
   end
 
-  def errorScore?
+  def error_score?
     result > PINS_MAX
   end
 end
