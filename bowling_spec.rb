@@ -113,11 +113,6 @@ RSpec.describe Bowling do
 			b1.roll(10)
 			b1.roll(10)
 			b1.roll(10)
-			b1.roll(10)
-			b1.roll(10)
-			b1.roll(10)
-			b1.roll(10)
-			b1.roll(10)
 			expect(b1.score).to eq(300)
     	end
 	
