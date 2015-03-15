@@ -26,6 +26,7 @@ equal 100 lines of code, and more public methods than private ones.
 ### New version of the code
 
 ```ruby
+# bowling.rb
 class Frame
   attr_reader :firstL, :secondL, :flagSituation, :bonus
   def initialize
