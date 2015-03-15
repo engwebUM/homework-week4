@@ -1,9 +1,8 @@
 class Frame
   attr_accessor :rolls,:actual_frame
-
- def initialize
-  @rolls=Array.new(2,0)
-  @actual_frame=0
+  def initialize
+    @rolls=Array.new(2,0)
+    @actual_frame=0
   end
 
   def strike?
@@ -30,20 +29,30 @@ class Frame
 
   def roll(pins)
     if pins==10 and @actual_frame==0 then
-      #strike
-      @rolls[0]=10
-      @rolls[1]='X'
-      @actual_frame=-1
+      it_was_strike
     elsif @actual_frame==1 and @rolls[0]+pins==10
-      #spare
-      @rolls[1]='/'
-      @actual_frame=-1
-    elsif @actual_frame==0
-      #regular try
+      it_was_spare
+    else
+      it_was_regular_move(pins)
+    end
+  end
+
+  def it_was_strike
+    @rolls[0]=10
+    @rolls[1]='X'
+    @actual_frame=-1
+  end
+
+  def it_was_spare
+    @rolls[1]='/'
+    @actual_frame=-1
+  end
+
+  def it_was_regular_move(pins)
+    if @actual_frame==0
       @rolls[@actual_frame]=pins
       @actual_frame=1
     else
-      #regular try
       @rolls[@actual_frame]=pins
       @actual_frame=-1
     end
@@ -54,11 +63,7 @@ class Frame
   end
 end
 
-
 class Bowling
-
-  attr_accessor :frames,:actual_frame
-
   def initialize
     @frames=Array.new(18){|i| Frame.new}
     @actual_frame=0
@@ -69,9 +74,7 @@ class Bowling
   end
 end
 
-  def roll(pins)
-    puts "----Actual frame"
-    puts @actual_frame  
+  def roll(pins) 
     if not valid_pins?(pins) then
       	raise 'The pins must be between 0 and 10.'
     else
@@ -84,14 +87,12 @@ end
     end 
   end
 
-
   def score
     points=0
     frame_counter=0
     while frame_counter<=@actual_frame and frame_counter<10 do
       points+=framePoints(frame_counter)
       frame_counter+=1
-      puts points
     end
       return points
   end
@@ -127,46 +128,3 @@ end
   end
 
 end
-
-
-
-b1=Bowling.new
-      b1.roll(10)
-      b1.roll(3)
-      b1.roll(7)
-      b1.roll(6)
-      b1.roll(1)
-      b1.roll(10)
-      b1.roll(10)
-      b1.roll(10)
-      b1.roll(2)
-      b1.roll(8)
-      b1.roll(9)
-      b1.roll(0)
-      b1.roll(7)
-      b1.roll(3)
-      b1.roll(10)
-      b1.roll(10)
-      b1.roll(10)
-      puts "----------"
-      puts b1.score
-      puts "--------ROLLS-------"
-      puts b1.frames[0].rolls
-      puts "----------"
-      puts b1.frames[1].rolls
-      puts "----------"
-      puts b1.frames[2].rolls
-      puts "----------"
-      puts b1.frames[3].rolls
-      puts "----------"
-      puts b1.frames[4].rolls
-      puts "----------"
-      puts b1.frames[5].rolls
-      puts "----------"
-      puts b1.frames[6].rolls
-      puts "----------"
-      puts b1.frames[7].rolls
-      puts "----------"
-      puts b1.frames[8].rolls
-      puts "\n\n\n------Score---------"
-      puts b1.score
