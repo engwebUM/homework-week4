@@ -1,7 +1,9 @@
 class Bowling
   def initialize
-  	@rolls = Array.new(21){0} 
+    @rolls = Array.new(21){0} 
     @index = 0
+    @score = 0
+    @roll_index = 0
   end
 
   def roll(pins)
@@ -11,21 +13,10 @@ class Bowling
   end
 
   def score
-    score = 0
-    roll_index = 0
     (1..10).each do
-      if is_strike? roll_index
-        score += roll_strike(roll_index)
-        roll_index += 1
-      elsif is_spare? roll_index
-          score += roll_spare(roll_index)
-          roll_index += 2
-      else
-      	score += roll_pins_frame(roll_index)
-        roll_index += 2
-      end
+      calculate_score @roll_index
     end
-  score
+    @score
   end
 
   def is_strike? roll_index
@@ -42,6 +33,31 @@ class Bowling
 
   def roll_spare roll_index
     10 + @rolls[roll_index + 2]
+  end
+
+  def bonus_strike roll_index
+    @score += roll_strike(roll_index)
+    @roll_index += 1
+  end
+
+  def bonus_spare roll_index
+    @score += roll_spare(@roll_index)
+    @roll_index += 2
+  end
+
+  def normal_count roll_index
+    @score += roll_pins_frame(@roll_index)
+    @roll_index += 2
+  end
+
+  def calculate_score roll_index
+    if is_strike? roll_index
+      bonus_strike(roll_index)
+    elsif is_spare? roll_index
+      bonus_spare(roll_index)
+    else
+      normal_count(roll_index)
+    end
   end
 
   def roll_pins_frame roll_index
