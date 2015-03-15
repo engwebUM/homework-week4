@@ -1,6 +1,6 @@
 class Spare_Score
   def initialize (score)
-  	@score=score
+    @score=score
   end
 
   def spare_score

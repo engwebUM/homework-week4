@@ -1,6 +1,6 @@
 class Normal_Score
   def initialize (score)
-  	@score=score
+    @score=score
   end
 
   def normal_score(roll)

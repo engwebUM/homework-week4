@@ -1,6 +1,6 @@
 class Strike_Score
   def initialize(score)
-  	@score=score
+    @score=score
   end
 
   def strike_score 
@@ -18,7 +18,7 @@ class Strike_Score
 
 
   def string_to_score(position)
-  	total=0
+    total=0
     total+= string_is_strike? (position)
     total+= string_is_spare? (position)
     total+= string_is_a_number(position)
@@ -26,30 +26,30 @@ class Strike_Score
   end
 
   def string_is_strike?(position)
-  	total=0
-  	if @score.game[position]=='strike' 
-  	then 
-  	  total= 10 
+    total=0
+    if @score.game[position]=='strike' 
+    then 
+      total= 10 
     end
-  	total
+    total
   end
 
   def string_is_spare?(position)
-  	total=0
-  	if @score.game[position]=='spare' 
-  	then 
-  	  total= 10-string_to_score(position-1)
+    total=0
+    if @score.game[position]=='spare' 
+    then 
+      total= 10-string_to_score(position-1)
     end
-  	total
+    total
   end
 
   def string_is_a_number(position)
     total=0
-  	if @score.game[position].is_a? Numeric
-  	then 
-  	  total= @score.game[position] 
-  	end
-  	total
+    if @score.game[position].is_a? Numeric
+    then 
+      total= @score.game[position] 
+    end
+    total
   end
 
 end

@@ -12,10 +12,10 @@ class Roll
   attr_accessor :valid_roll    #is a valid roll ??  (if no then -1) 
 
   def initialize(bowling)
-  	@bowling=bowling
+    @bowling=bowling
     @game = bowling.game
-  	@first_roll = -1
-  	@second_roll = 0
+    @first_roll = -1
+    @second_roll = 0
     @frame = 0
     @valid_roll= 0
   end
@@ -34,7 +34,7 @@ class Roll
   @private 
 
   def frame_10_is_Strike_case(pins)
-  	if pins<=10 and pins>=0 and @frame>=10 and @frame<12 and (@game.last=='strike' or (@game.take(@game.size-1)).last=='strike')
+    if pins<=10 and pins>=0 and @frame>=10 and @frame<12 and (@game.last=='strike' or (@game.take(@game.size-1)).last=='strike')
     then
       @valid_roll =1
       frame_10_strike_bonus = Roll_Frame_10_Strike_Bonus.new(self)
