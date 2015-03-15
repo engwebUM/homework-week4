@@ -57,7 +57,7 @@ class Frames
   MIN_FRAMES = 0
   MAX_EXTRA_BALLS = 2
 
-  def initialize(extraBallManager)
+  def initialize(extraBallManager = ExtraBallManager.new)
     @frameCounter = 0
     @frames = Array.new(MAX_FRAMES + MAX_EXTRA_BALLS){ Frame.new }
     @extraBallManager = extraBallManager
@@ -78,6 +78,22 @@ class Frames
     end
   end
 
+  def getCurrentFrame
+    if isLastFrame?
+      @extraBallManager.calculateExtraBalls(frames[frameCounter])
+    end
+    getNextFrame
+  end
+
+  def isLastFrame?
+    frameCounter == MAX_FRAMES - 1
+  end
+
+  def isBonusFrame?
+    frameCounter >= MAX_FRAMES
+  end
+
+  private
   def calculateFramesScore(counter, score=0)
     for index in 0..counter
       score += frames[index].score + verifyIfIsStrikeOrSpare(index).to_i
@@ -92,15 +108,6 @@ class Frames
     score
   end
 
-  def isLastFrame?
-    frameCounter == MAX_FRAMES - 1
-  end
-
-  def isBonusFrame?
-    frameCounter >= MAX_FRAMES
-  end
-
-  private
   def verifyIfIsStrikeOrSpare(index)
     if frames[index].isStrike?
        closeTwoBallsScore(index + 1)
@@ -111,23 +118,14 @@ class Frames
 
   def closeTwoBallsScore(currentFrameNumber)
     if frames[currentFrameNumber].isStrike?
-      frames[currentFrameNumber].score + frames[currentFrameNumber + 1].firstAttempt
-    else
-      frames[currentFrameNumber].score
+      return frames[currentFrameNumber].firstAttempt + frames[currentFrameNumber + 1].firstAttempt
     end
-  end
-
-  def getCurrentFrame
-    if isLastFrame?
-      @extraBallManager.calculateExtraBalls(frames[frameCounter])
-    end
-    getNextFrame
+    frames[currentFrameNumber].score
   end
 
   def getNextFrame
     if frames[frameCounter].isDone?
       @frameCounter += 1
-      frames[frameCounter]
     end
     frames[frameCounter]
   end
@@ -135,8 +133,8 @@ end
 
 class Bowling
 
-  def initialize(extraBallManager= ExtraBallManager.new)
-    @frames = Frames.new(extraBallManager)
+  def initialize(frames = Frames.new)
+    @frames = frames
   end
 
   def roll(pins = 0)
