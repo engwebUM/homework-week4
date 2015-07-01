@@ -48,7 +48,8 @@ class Bowling
   def roll(pins)
     frame = currentFrame
     frame.roll(pins)
-    verifications(pins, frame)
+    verifyPins(pins)
+    verifyFrame(frame)
   end
 
   def currentFrame
@@ -58,22 +59,23 @@ class Bowling
     return @frames.last
   end
 
-  def verifications(pins, frame)
-    
+  def verifyPins(pins)
+    if (pins == 10) 
+      @strike = true
+    end
+
+    if (@spare)         
+      previousFrame(-2).bonusScore = pins
+      @spare = false 
+    end
+  end
+
+  def verifyFrame(frame)
     if (@strike && frame.isLast)  
      previousFrame.bonusScore = frame.score
      @strike = false 
     end
 
-    if (pins == 10) 
-      @strike = true
-    end
-    
-    if (@spare)         
-      previousFrame(-2).bonusScore = pins
-      @spare = false 
-    end
-    
     if (frame.score == 10) 
       @spare = true 
     end
